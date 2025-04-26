@@ -132,7 +132,7 @@
   </div>
 
   <div id="display"></div>
-  <div id="score">Score: 0 / 0</div>
+  <div id="score">امتیاز: 0 / 0</div>
 
   <script>
     const techData = {
@@ -172,7 +172,7 @@
     let totalQuestions = 0;
 
     function updateScore() {
-      document.getElementById('score').textContent = `Score: ${correctAnswers} / ${totalQuestions}`;
+      document.getElementById('score').textContent = `امتیاز: ${correctAnswers} / ${totalQuestions}`;
     }
 
     function resetScore() {
@@ -207,7 +207,7 @@
       options.sort(() => Math.random() - 0.5);
 
       document.getElementById('display').innerHTML = `
-        <h2>Guess the Arabic word:</h2>
+        <h2>کلمه عربی را حدس بزنید:</h2>
         <img src="${correct.image}" alt="quiz image">
         <div id="quiz-options">
           ${options.map(opt => `<button onclick="checkAnswer('${opt}', '${correct.arabic}')">${opt}</button>`).join('')}
