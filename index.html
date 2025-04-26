@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech Flashcards in Arabic</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      color: #333;
+      text-align: center;
+      padding: 2rem;
+      margin: 0;
+      animation: fadeIn 1s ease-out;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #3b5998;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+    #display {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0;
+      animation: fadeIn 1s ease-out forwards;
+    }
+    img {
+      max-width: 180px;
+      margin: 1rem 0;
+      border-radius: 8px;
+      transform: scale(0);
+      animation: scaleIn 0.5s ease-out forwards;
+    }
+    .arabic {
+      font-size: 1.8rem;
+      color: #0056b3;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background-color: #45a049;
+      transform: scale(1.1);
+    }
+    button:active {
+      background-color: #388e3c;
+      transform: scale(1);
+    }
+    #quiz-options {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    #quiz-options button {
+      width: 100%;
+      margin: 5px 0;
+      max-width: 300px;
+      transition: transform 0.2s ease-out;
+    }
+    #quiz-options button:hover {
+      transform: scale(1.05);
+    }
+    #score {
+      margin-top: 1rem;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #444;
+    }
+    .quiz-result {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .correct {
+      color: green;
+    }
+    .incorrect {
+      color: red;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes scaleIn {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>فلش کارت های تکنولوژی (عربی)</h1>
+
+  <div>
+    <button onclick="showCard('mobile')">مبایل</button>
+    <button onclick="showCard('laptop')">لپ تاپ</button>
+    <button onclick="showCard('tablet')">تبلت</button>
+    <button onclick="showCard('airpods')">ایرپاد</button>
+    <button onclick="showCard('smartwatch')">ساعت هوشمند</button>
+    <button onclick="showCard('headphones')">هدفون</button>
+    <button onclick="startQuiz()">🎯 شروع آزمون</button>
+    <button onclick="resetScore()">🔁 آزمون مجدد</button>
+  </div>
+
+  <div id="display"></div>
+  <div id="score">Score: 0 / 0</div>
+
+  <script>
+    const techData = {
+      mobile: {
+        image: 'https://www.iconpacks.net/icons/2/free-mobile-phone-icon-2636-thumb.png',
+        arabic: 'هاتف محمول',
+        audio: 'audio/mobile.mp3'
+      },
+      laptop: {
+        image: 'https://static.vecteezy.com/system/resources/thumbnails/024/744/017/small_2x/modern-laptop-icon-isolated-design-vector.jpg',
+        arabic: 'حاسوب محمول',
+        audio: 'audio/laptop.mp3'
+      },
+      tablet: {
+        image: 'https://cdn-icons-png.flaticon.com/512/1530/1530457.png',
+        arabic: 'جهاز لوحي',
+        audio: 'audio/tablet.mp3'
+      },
+      airpods: {
+        image: 'https://cdn-icons-png.flaticon.com/512/2223/2223276.png',
+        arabic: 'سماعات أيربودز',
+        audio: 'audio/airpods.mp3'
+      },
+      smartwatch: {
+        image: 'https://static.vecteezy.com/system/resources/previews/047/743/719/non_2x/wearable-smartwatch-icon-ideal-for-technology-and-gadgets-vector.jpg',
+        arabic: 'ساعة ذكية',
+        audio: 'audio/smartwatch.mp3'
+      },
+      headphones: {
+        image: 'https://images.vexels.com/media/users/3/150845/isolated/preview/333bdf231eba2185ef3e211bb541c09f-audio-headphones-icon.png?w=360',
+        arabic: 'سماعات رأس',
+        audio: 'audio/headphones.mp3'
+      }
+    };
+
+    let correctAnswers = 0;
+    let totalQuestions = 0;
+
+    function updateScore() {
+      document.getElementById('score').textContent = `Score: ${correctAnswers} / ${totalQuestions}`;
+    }
+
+    function resetScore() {
+      correctAnswers = 0;
+      totalQuestions = 0;
+      updateScore();
+      document.getElementById('display').innerHTML = '';
+    }
+
+    function showCard(item) {
+      const { image, arabic, audio } = techData[item];
+      document.getElementById('display').innerHTML = `
+        <div>
+          <img src="${image}" alt="${item}">
+          ${audio ? `<button onclick="new Audio('${audio}').play()">🔊</button>` : ''}
+        </div>
+        <div class="arabic">${arabic}</div>
+      `;
+    }
+
+    function startQuiz() {
+      const keys = Object.keys(techData);
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      const correct = techData[randomKey];
+
+      const options = [correct.arabic];
+      while (options.length < 3) {
+        const randOption = techData[keys[Math.floor(Math.random() * keys.length)]].arabic;
+        if (!options.includes(randOption)) options.push(randOption);
+      }
+
+      options.sort(() => Math.random() - 0.5);
+
+      document.getElementById('display').innerHTML = `
+        <h2>Guess the Arabic word:</h2>
+        <img src="${correct.image}" alt="quiz image">
+        <div id="quiz-options">
+          ${options.map(opt => `<button onclick="checkAnswer('${opt}', '${correct.arabic}')">${opt}</button>`).join('')}
+        </div>
+        <div class="quiz-result" id="quiz-result"></div>
+      `;
+    }
+
+    function checkAnswer(selected, correct) {
+      totalQuestions++;
+      const resultDiv = document.getElementById('quiz-result');
+      if (selected === correct) {
+        correctAnswers++;
+        resultDiv.innerHTML = `<p class="correct">✅ درست!</p>`;
+      } else {
+        resultDiv.innerHTML = `<p class="incorrect">❌ غلط! جواب درست: ${correct}</p>`;
+      }
+
+      updateScore();
+      setTimeout(startQuiz, 1500);
+    }
+  </script>
+</body>
+</html>
